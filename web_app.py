@@ -27,24 +27,13 @@ def index():
     resultado = None
     if request.method == 'POST':
         datos_usuario = {
-            'annual_inc': float(request.form['annual_inc']),
-            'revol_bal': float(request.form['revol_bal']),
-            'emp_length': float(request.form['emp_length']),
-            'open_acc': float(request.form['open_acc']),
-            'home_ownership': request.form['home_ownership'],
-            'grade': request.form['grade'],
-            'purpose': request.form['purpose'],
-            'addr_state': request.form['addr_state'],
-            'initial_list_status': request.form['initial_list_status'],
-            'application_type': request.form['application_type'],
-            'verification_status_joint': request.form['verification_status_joint']
+            'last_pymnt_amnt': float(request.form['last_pymnt_amnt']),
+            'total_rec_prncp': float(request.form['total_rec_prncp']),
+            'funded_amnt': float(request.form['funded_amnt']),
+            'funded_amnt_inv': float(request.form['funded_amnt_inv']),
+            'total_pymnt_inv': float(request.form['total_pymnt_inv']),
+            'total_pymnt': float(request.form['total_pymnt'])
         }
-        # Campos de fecha opcionales
-        fechas = ['earliest_cr_line', 'last_pymnt_d', 'next_pymnt_d', 'last_credit_pull_d']
-        for campo in fechas:
-            valor = request.form.get(campo, '').strip()
-            if valor:
-                datos_usuario[campo] = valor
         prob = crm.predict(datos_usuario)[0]
         score = int(crm.prob_to_score(prob))
         resultado = {
