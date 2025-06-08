@@ -2,10 +2,16 @@ from flask import Flask, render_template, request
 from credit_risk_model import CreditRiskModel
 import gspread
 from google.oauth2.service_account import Credentials
+import os
 
 app = Flask(__name__)
 crm = CreditRiskModel()
 crm.load()
+
+# Crea el archivo credentials.json si no existe, usando la variable de entorno
+if not os.path.exists('credentials.json') and 'GOOGLE_CREDENTIALS_JSON' in os.environ:
+    with open('credentials.json', 'w') as f:
+        f.write(os.environ['GOOGLE_CREDENTIALS_JSON'])
 
 def guardar_resultado_en_sheets(score, probabilidad):
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
