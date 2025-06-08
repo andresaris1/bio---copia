@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Trabajo 2: aplicaciones de redes neuronales a datos tabulares</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Trabajo 2: aplicaciones de redes neuronales a datos tabulares</h1>
+    <form method="post">
+        <!-- NUMÉRICOS/TEXTO OBLIGATORIOS -->
+        <div class="mb-3">
+            <label for="annual_inc" class="form-label">¿Cuál es su ingreso anual?</label>
+            <input type="number" class="form-control" id="annual_inc" name="annual_inc" min="0" required placeholder="Ejemplo: 50000">
+            <div class="form-text">Ingrese el monto total de ingresos anuales en dólares.</div>
+        </div>
+        <div class="mb-3">
+            <label for="revol_bal" class="form-label">¿Cuál es su deuda actual (saldo de tarjetas, préstamos, etc.)?</label>
+            <input type="number" class="form-control" id="revol_bal" name="revol_bal" min="0" required placeholder="Ejemplo: 10000">
+            <div class="form-text">Ingrese el monto total de deuda actual en dólares.</div>
+        </div>
+        <div class="mb-3">
+            <label for="emp_length" class="form-label">¿Cuántos años ha trabajado en su empleo actual?</label>
+            <input type="number" class="form-control" id="emp_length" name="emp_length" min="0" required placeholder="Ejemplo: 5">
+            <div class="form-text">Ingrese el número de años (por ejemplo: 1, 5, 10).</div>
+        </div>
+        <div class="mb-3">
+            <label for="open_acc" class="form-label">¿Cuántas cuentas de crédito abiertas tiene actualmente?</label>
+            <input type="number" class="form-control" id="open_acc" name="open_acc" min="0" required placeholder="Ejemplo: 3">
+            <div class="form-text">Ingrese el número de cuentas abiertas (por ejemplo: 2, 5, 10).</div>
+        </div>
+        <!-- CATEGÓRICAS OBLIGATORIAS -->
+        <div class="mb-3">
+            <label for="home_ownership" class="form-label">¿Cuál es su situación de vivienda?</label>
+            <select class="form-select" id="home_ownership" name="home_ownership" required>
+                <option value="RENT">Alquilo (RENT)</option>
+                <option value="OWN">Propietario sin hipoteca (OWN)</option>
+                <option value="MORTGAGE">Propietario con hipoteca (MORTGAGE)</option>
+                <option value="OTHER">Otra situación (OTHER)</option>
+            </select>
+            <div class="form-text">Seleccione la opción que mejor describa su situación.</div>
+        </div>
+        <div class="mb-3">
+            <label for="grade" class="form-label">¿Cuál es su grado de crédito?</label>
+            <select class="form-select" id="grade" name="grade" required>
+                <option value="A">A (mejor, menor riesgo)</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
+                <option value="G">G (mayor riesgo)</option>
+            </select>
+            <div class="form-text">Seleccione la calificación que le asigna la entidad financiera.</div>
+        </div>
+        <div class="mb-3">
+            <label for="purpose" class="form-label">¿Cuál es el propósito del préstamo?</label>
+            <select class="form-select" id="purpose" name="purpose" required>
+                <option value="debt_consolidation">Deuda consolidada</option>
+                <option value="car">Compra de auto</option>
+                <option value="home_improvement">Mejoras en la vivienda</option>
+                <option value="educational">Educación</option>
+                <option value="vacation">Vacaciones</option>
+                <option value="house">Compra de casa</option>
+                <option value="major_purchase">Compra importante</option>
+                <option value="medical">Gastos médicos</option>
+                <option value="moving">Mudanza</option>
+                <option value="renewable_energy">Energía renovable</option>
+                <option value="small_business">Negocio propio</option>
+                <option value="wedding">Boda</option>
+                <option value="other">Otro</option>
+            </select>
+            <div class="form-text">Seleccione el motivo principal del préstamo.</div>
+        </div>
+        <div class="mb-3">
+            <label for="addr_state" class="form-label">¿En qué estado de EE.UU. reside?</label>
+            <select class="form-select" id="addr_state" name="addr_state" required>
+                <option value="AL">Alabama (AL)</option>
+                <option value="AR">Arkansas (AR)</option>
+                <option value="AZ">Arizona (AZ)</option>
+                <option value="CA">California (CA)</option>
+                <option value="CO">Colorado (CO)</option>
+                <option value="CT">Connecticut (CT)</option>
+                <option value="DC">Washington DC (DC)</option>
+                <option value="DE">Delaware (DE)</option>
+                <option value="FL">Florida (FL)</option>
+                <option value="GA">Georgia (GA)</option>
+                <option value="HI">Hawái (HI)</option>
+                <option value="IA">Iowa (IA)</option>
+                <option value="ID">Idaho (ID)</option>
+                <option value="IL">Illinois (IL)</option>
+                <option value="IN">Indiana (IN)</option>
+                <option value="KS">Kansas (KS)</option>
+                <option value="KY">Kentucky (KY)</option>
+                <option value="LA">Louisiana (LA)</option>
+                <option value="MA">Massachusetts (MA)</option>
+                <option value="MD">Maryland (MD)</option>
+                <option value="ME">Maine (ME)</option>
+                <option value="MI">Michigan (MI)</option>
+                <option value="MN">Minnesota (MN)</option>
+                <option value="MO">Missouri (MO)</option>
+                <option value="MS">Mississippi (MS)</option>
+                <option value="MT">Montana (MT)</option>
+                <option value="NC">Carolina del Norte (NC)</option>
+                <option value="ND">Dakota del Norte (ND)</option>
+                <option value="NE">Nebraska (NE)</option>
+                <option value="NH">New Hampshire (NH)</option>
+                <option value="NJ">Nueva Jersey (NJ)</option>
+                <option value="NM">Nuevo México (NM)</option>
+                <option value="NV">Nevada (NV)</option>
+                <option value="NY">Nueva York (NY)</option>
+                <option value="OH">Ohio (OH)</option>
+                <option value="OK">Oklahoma (OK)</option>
+                <option value="OR">Oregón (OR)</option>
+                <option value="PA">Pensilvania (PA)</option>
+                <option value="RI">Rhode Island (RI)</option>
+                <option value="SC">Carolina del Sur (SC)</option>
+                <option value="SD">Dakota del Sur (SD)</option>
+                <option value="TN">Tennessee (TN)</option>
+                <option value="TX">Texas (TX)</option>
+                <option value="UT">Utah (UT)</option>
+                <option value="VA">Virginia (VA)</option>
+                <option value="VT">Vermont (VT)</option>
+                <option value="WA">Washington (WA)</option>
+                <option value="WI">Wisconsin (WI)</option>
+                <option value="WV">Virginia Occidental (WV)</option>
+                <option value="WY">Wyoming (WY)</option>
+            </select>
+            <div class="form-text">Seleccione su estado de residencia.</div>
+        </div>
+        <div class="mb-3">
+            <label for="initial_list_status" class="form-label">Estado inicial del préstamo</label>
+            <select class="form-select" id="initial_list_status" name="initial_list_status" required>
+                <option value="f">f</option>
+                <option value="w">w</option>
+            </select>
+            <div class="form-text">Seleccione el estado inicial del préstamo.</div>
+        </div>
+        <div class="mb-3">
+            <label for="application_type" class="form-label">Tipo de aplicación</label>
+            <select class="form-select" id="application_type" name="application_type" required>
+                <option value="INDIVIDUAL">Individual</option>
+                <option value="JOINT">Conjunta</option>
+            </select>
+            <div class="form-text">Seleccione si la aplicación es individual o conjunta.</div>
+        </div>
+        <div class="mb-3">
+            <label for="verification_status_joint" class="form-label">Estado de verificación conjunta</label>
+            <select class="form-select" id="verification_status_joint" name="verification_status_joint" required>
+                <option value="Source Verified">Fuente verificada</option>
+                <option value="Verified">Verificada</option>
+                <option value="Not Verified">No verificada</option>
+            </select>
+            <div class="form-text">Seleccione el estado de verificación conjunta.</div>
+        </div>
+        <!-- FECHAS OPCIONALES -->
+        <div class="mb-3">
+            <label for="earliest_cr_line" class="form-label">Fecha de apertura de la primera línea de crédito (opcional)</label>
+            <input type="text" class="form-control" id="earliest_cr_line" name="earliest_cr_line" placeholder="Ejemplo: Jan-2000">
+            <div class="form-text">Formato: Mes-Año (ejemplo: Jan-2000). Puede dejarse vacío.</div>
+        </div>
+        <div class="mb-3">
+            <label for="last_pymnt_d" class="form-label">Fecha del último pago (opcional)</label>
+            <input type="text" class="form-control" id="last_pymnt_d" name="last_pymnt_d" placeholder="Ejemplo: Jan-2015">
+            <div class="form-text">Formato: Mes-Año (ejemplo: Jan-2015). Puede dejarse vacío.</div>
+        </div>
+        <div class="mb-3">
+            <label for="next_pymnt_d" class="form-label">Fecha del próximo pago (opcional)</label>
+            <input type="text" class="form-control" id="next_pymnt_d" name="next_pymnt_d" placeholder="Ejemplo: Feb-2016">
+            <div class="form-text">Formato: Mes-Año (ejemplo: Feb-2016). Puede dejarse vacío.</div>
+        </div>
+        <div class="mb-3">
+            <label for="last_credit_pull_d" class="form-label">Fecha de la última revisión de crédito (opcional)</label>
+            <input type="text" class="form-control" id="last_credit_pull_d" name="last_credit_pull_d" placeholder="Ejemplo: Mar-2016">
+            <div class="form-text">Formato: Mes-Año (ejemplo: Mar-2016). Puede dejarse vacío.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Calcular score</button>
+    </form>
+    {% if resultado %}
+    <div class="alert alert-success mt-4">
+        <h4>Resultado</h4>
+        <p><strong>Probabilidad de incumplimiento:</strong> {{ resultado.probabilidad }}%</p>
+        <p><strong>Score crediticio:</strong> {{ resultado.score }}</p>
+    </div>
+    {% endif %}
+</div>
+</body>
+</html> 
