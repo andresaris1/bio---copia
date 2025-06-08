@@ -3,4 +3,6 @@ tensorflow
 pandas
 numpy
 joblib
-scikit-learn 
+scikit-learn
+gspread
+google-auth
