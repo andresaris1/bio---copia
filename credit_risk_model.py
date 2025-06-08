@@ -89,7 +89,6 @@ class CreditRiskModel:
     def load(self):
         self.model = keras.models.load_model(self.model_path)
         self.columns = joblib.load(self.prep_path)
-        import joblib
         if os.path.exists('calibrator.pkl'):
             self.calibrator = joblib.load('calibrator.pkl')
         else:
