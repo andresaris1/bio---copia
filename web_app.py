@@ -1,9 +1,20 @@
 from flask import Flask, render_template, request
 from credit_risk_model import CreditRiskModel
+import gspread
+from google.oauth2.service_account import Credentials
 
 app = Flask(__name__)
 crm = CreditRiskModel()
 crm.load()
+
+def guardar_resultado_en_sheets(score, probabilidad):
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+    creds = Credentials.from_service_account_file('credentials.json', scopes=SCOPES)
+    gc = gspread.authorize(creds)
+    sh = gc.open('Resultados de la encuesta')  # Cambiado al nombre correcto
+    worksheet = sh.sheet1  # O usa .worksheet('NombreDeLaHoja') si tienes varias
+    fila = [score, probabilidad]
+    worksheet.append_row(fila)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -34,6 +45,7 @@ def index():
             'probabilidad': f"{prob*100:.2f}",
             'score': score
         }
+        guardar_resultado_en_sheets(score, resultado['probabilidad'])
     return render_template('index.html', resultado=resultado)
 
 if __name__ == '__main__':
