@@ -110,11 +110,88 @@
         <div class="prob-value">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ resultado.probabilidad }}%
         </div>
+        <div class="mt-3">
+            <span class="badge 
+                {% if resultado.clasificacion == 'Buen crédito' %}bg-success
+                {% elif resultado.clasificacion == 'Crédito regular' %}bg-warning text-dark
+                {% else %}bg-danger
+                {% endif %}">
+                {{ resultado.clasificacion }}
+            </span>
+        </div>
+        <div class="card-footer mt-3">
+            <i class="bi bi-people-fill me-2"></i>
+            {% if resultado.clasificacion == 'Buen crédito' %}
+                Tu score está entre los mejores, perteneces al grupo de personas con buen crédito.
+            {% elif resultado.clasificacion == 'Crédito regular' %}
+                Tu score es regular, estás en el promedio de la población.
+            {% else %}
+                Tu score es bajo, perteneces al grupo de personas con mal crédito.
+            {% endif %}
+        </div>
         <div class="card-footer">
             <i class="bi bi-credit-card-2-front-fill me-2"></i>
             Simulación de tarjeta de crédito
         </div>
+        <div class="mt-4">
+            <canvas id="scoreChart" width="350" height="180"></canvas>
+        </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        {% if percentiles %}
+        const ctx = document.getElementById('scoreChart').getContext('2d');
+        const percentiles = {{ percentiles|tojson }};
+        const userScore = {{ resultado.score }};
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mínimo', '25%', 'Mediana', '75%', 'Máximo', 'Tu score'],
+                datasets: [
+                    {
+                        label: 'Percentiles de la población',
+                        data: [...percentiles, null],
+                        borderColor: '#00e6e6',
+                        backgroundColor: 'rgba(0,230,230,0.15)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#00e6e6',
+                        pointBorderColor: '#fff'
+                    },
+                    {
+                        label: 'Tu score',
+                        data: [null, null, null, null, null, userScore],
+                        borderColor: '#ffea00',
+                        backgroundColor: '#ffea00',
+                        pointRadius: 9,
+                        type: 'scatter',
+                        showLine: false,
+                        pointBackgroundColor: '#ffea00',
+                        pointBorderColor: '#fff'
+                    }
+                ]
+            },
+            options: {
+                plugins: {
+                    legend: { display: true, labels: { color: '#fff' } }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#fff' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Score', color: '#fff' },
+                        ticks: { color: '#fff' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                }
+            }
+        });
+        {% endif %}
+    </script>
     {% endif %}
 </div>
 </body>
