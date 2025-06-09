@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request
 from credit_risk_model import CreditRiskModel
-import gspread
-from google.oauth2.service_account import Credentials
 import os
+import psycopg2
 
 app = Flask(__name__)
 crm = CreditRiskModel()
@@ -13,14 +12,33 @@ if not os.path.exists('credentials.json') and 'GOOGLE_CREDENTIALS_JSON' in os.en
     with open('credentials.json', 'w') as f:
         f.write(os.environ['GOOGLE_CREDENTIALS_JSON'])
 
-def guardar_resultado_en_sheets(score, probabilidad):
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-    creds = Credentials.from_service_account_file('credentials.json', scopes=SCOPES)
-    gc = gspread.authorize(creds)
-    sh = gc.open('Resultados de la encuesta')  # Cambiado al nombre correcto
-    worksheet = sh.sheet1  # O usa .worksheet('NombreDeLaHoja') si tienes varias
-    fila = [score, probabilidad]
-    worksheet.append_row(fila)
+def guardar_resultado_en_db(score, probabilidad):
+    conn = psycopg2.connect(
+        host="dpg-d133a5emcj7s73fu4eh0-a.oregon-postgres.render.com",  # Host externo de Render
+        database="datos_de_scorecard",
+        user="datos_de_scorecard_user",
+        password="yTZonId3v8h477Ch3rqIy8fmusl8C67r",
+        port="5432"
+    )
+    cur = conn.cursor()
+    # Crear la tabla si no existe
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS resultados (
+        id SERIAL PRIMARY KEY,
+        score INTEGER,
+        probabilidad FLOAT,
+        fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+    conn.commit()
+    # Insertar el resultado
+    cur.execute(
+        "INSERT INTO resultados (score, probabilidad) VALUES (%s, %s)",
+        (score, float(probabilidad))
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -40,7 +58,7 @@ def index():
             'probabilidad': f"{prob*100:.2f}",
             'score': score
         }
-        guardar_resultado_en_sheets(score, resultado['probabilidad'])
+        guardar_resultado_en_db(score, resultado['probabilidad'])
     return render_template('index.html', resultado=resultado)
 
 if __name__ == '__main__':
