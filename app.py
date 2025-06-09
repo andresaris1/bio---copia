@@ -12,6 +12,7 @@ st.write("""
 Ingrese los datos de su historial crediticio para conocer su score de riesgo.
 """)
 
+
 # Explicación de cada variable
 st.markdown("""
 **last_pymnt_amnt**: Monto del último pago realizado por el cliente. Ejemplo: 500. Valores bajos suelen indicar menor riesgo.
