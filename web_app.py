@@ -14,11 +14,11 @@ if not os.path.exists('credentials.json') and 'GOOGLE_CREDENTIALS_JSON' in os.en
 
 def guardar_resultado_en_db(score, probabilidad):
     conn = psycopg2.connect(
-        host="dpg-d133a5emcj7s73fu4eh0-a.oregon-postgres.render.com",  # Host externo de Render
-        database="datos_de_scorecard",
-        user="datos_de_scorecard_user",
-        password="yTZonId3v8h477Ch3rqIy8fmusl8C67r",
-        port="5432"
+        host=os.environ['DB_HOST'],
+        database=os.environ['DB_NAME'],
+        user=os.environ['DB_USER'],
+        password=os.environ['DB_PASSWORD'],
+        port=os.environ.get('DB_PORT', '5432')
     )
     cur = conn.cursor()
     # Crear la tabla si no existe
