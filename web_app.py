@@ -13,14 +13,14 @@ if not os.path.exists('credentials.json') and 'GOOGLE_CREDENTIALS_JSON' in os.en
     with open('credentials.json', 'w') as f:
         f.write(os.environ['GOOGLE_CREDENTIALS_JSON'])
 
-def guardar_resultado_en_sheets(score, probabilidad):
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-    creds = Credentials.from_service_account_file('credentials.json', scopes=SCOPES)
-    gc = gspread.authorize(creds)
-    sh = gc.open('Resultados de la encuesta')  # Cambiado al nombre correcto
-    worksheet = sh.sheet1  # O usa .worksheet('NombreDeLaHoja') si tienes varias
-    fila = [score, probabilidad]
-    worksheet.append_row(fila)
+# def guardar_resultado_en_sheets(score, probabilidad):
+#     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+#     creds = Credentials.from_service_account_file('credentials.json', scopes=SCOPES)
+#     gc = gspread.authorize(creds)
+#     sh = gc.open('Resultados de la encuesta')  # Cambiado al nombre correcto
+#     worksheet = sh.sheet1  # O usa .worksheet('NombreDeLaHoja') si tienes varias
+#     fila = [score, probabilidad]
+#     worksheet.append_row(fila)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -40,7 +40,7 @@ def index():
             'probabilidad': f"{prob*100:.2f}",
             'score': score
         }
-        guardar_resultado_en_sheets(score, resultado['probabilidad'])
+        # guardar_resultado_en_sheets(score, resultado['probabilidad'])
     return render_template('index.html', resultado=resultado)
 
 if __name__ == '__main__':

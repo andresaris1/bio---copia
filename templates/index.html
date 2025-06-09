@@ -4,44 +4,118 @@
     <meta charset="UTF-8">
     <title>Scorecard de Riesgo Crediticio</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        /* Fallback si no carga el archivo externo */
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+        }
+        .bg-blur-blue {
+            background: rgba(30, 60, 114, 0.85);
+            backdrop-filter: blur(4px);
+        }
+        .result-beauty {
+            background: linear-gradient(120deg, #2575fc 0%, #6a11cb 100%);
+            border-radius: 28px;
+            box-shadow: 0 8px 32px 0 #00000033;
+            padding: 2.5rem 2rem 2rem 2rem;
+            margin: 2rem auto 0 auto;
+            max-width: 420px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        .result-beauty .icon-circle {
+            background: rgba(255,255,255,0.18);
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.2rem auto;
+            font-size: 2.5rem;
+            box-shadow: 0 2px 12px #0002;
+        }
+        .result-beauty .score-value {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 8px #0005;
+        }
+        .result-beauty .prob-value {
+            font-size: 1.7rem;
+            font-weight: 600;
+            color: #e0eaff;
+            margin-bottom: 1rem;
+        }
+        .result-beauty .score-label,
+        .result-beauty .prob-label {
+            font-size: 1.1rem;
+            color: #d1e6ff;
+            margin-bottom: 0.2rem;
+        }
+        .result-beauty .card-footer {
+            margin-top: 1.5rem;
+            font-size: 1rem;
+            color: #b3cfff;
+            text-align: center;
+            text-shadow: 0 1px 2px #0002;
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="mb-4">Scorecard de Riesgo Crediticio</h1>
-    <form method="post">
+    <h1 class="mb-4 text-center text-white">Scorecard de Riesgo Crediticio</h1>
+    <form method="post" class="p-4 rounded-4 shadow-lg bg-blur-blue">
         <div class="mb-3">
-            <label for="last_pymnt_amnt" class="form-label">Monto del último pago (last_pymnt_amnt)</label>
+            <label for="last_pymnt_amnt" class="form-label text-white">Monto del último pago (last_pymnt_amnt)</label>
             <input type="number" class="form-control" id="last_pymnt_amnt" name="last_pymnt_amnt" min="0" step="any" required placeholder="Ejemplo: 500">
         </div>
         <div class="mb-3">
-            <label for="total_rec_prncp" class="form-label">Total de principal recuperado (total_rec_prncp)</label>
+            <label for="total_rec_prncp" class="form-label text-white">Total de principal recuperado (total_rec_prncp)</label>
             <input type="number" class="form-control" id="total_rec_prncp" name="total_rec_prncp" min="0" step="any" required placeholder="Ejemplo: 10000">
         </div>
         <div class="mb-3">
-            <label for="funded_amnt" class="form-label">Monto financiado (funded_amnt)</label>
+            <label for="funded_amnt" class="form-label text-white">Monto financiado (funded_amnt)</label>
             <input type="number" class="form-control" id="funded_amnt" name="funded_amnt" min="0" step="any" required placeholder="Ejemplo: 12000">
         </div>
         <div class="mb-3">
-            <label for="funded_amnt_inv" class="form-label">Monto financiado por inversores (funded_amnt_inv)</label>
+            <label for="funded_amnt_inv" class="form-label text-white">Monto financiado por inversores (funded_amnt_inv)</label>
             <input type="number" class="form-control" id="funded_amnt_inv" name="funded_amnt_inv" min="0" step="any" required placeholder="Ejemplo: 12000">
         </div>
         <div class="mb-3">
-            <label for="total_pymnt_inv" class="form-label">Pagos totales a inversores (total_pymnt_inv)</label>
+            <label for="total_pymnt_inv" class="form-label text-white">Pagos totales a inversores (total_pymnt_inv)</label>
             <input type="number" class="form-control" id="total_pymnt_inv" name="total_pymnt_inv" min="0" step="any" required placeholder="Ejemplo: 11000">
         </div>
         <div class="mb-3">
-            <label for="total_pymnt" class="form-label">Pagos totales (total_pymnt)</label>
+            <label for="total_pymnt" class="form-label text-white">Pagos totales (total_pymnt)</label>
             <input type="number" class="form-control" id="total_pymnt" name="total_pymnt" min="0" step="any" required placeholder="Ejemplo: 11000">
         </div>
-        <button type="submit" class="btn btn-primary">Calcular score</button>
+        <button type="submit" class="btn btn-primary w-100">Calcular score</button>
     </form>
     {% if resultado %}
-    <div class="alert alert-success mt-4">
-        <h4>Resultado</h4>
-        <p><strong>Probabilidad de incumplimiento:</strong> {{ resultado.probabilidad }}%</p>
-        <p><strong>Score crediticio:</strong> {{ resultado.score }}</p>
+    <div class="result-beauty mt-5">
+        <div class="icon-circle mb-3">
+            <i class="bi bi-bar-chart-fill"></i>
+        </div>
+        <div class="score-label">Score crediticio</div>
+        <div class="score-value">{{ resultado.score }}</div>
+        <div class="prob-label">Probabilidad de incumplimiento</div>
+        <div class="prob-value">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ resultado.probabilidad }}%
+        </div>
+        <div class="card-footer">
+            <i class="bi bi-credit-card-2-front-fill me-2"></i>
+            Simulación de tarjeta de crédito
+        </div>
     </div>
     {% endif %}
 </div>
 </body>
-</html> 
+</html>

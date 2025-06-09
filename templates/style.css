@@ -1,0 +1,112 @@
+body {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+
+h1 {
+    color: #f4f8ff;
+    text-shadow: 1px 2px 8px #00000055;
+    font-weight: 700;
+}
+
+.form-label {
+    color: #e3eaff;
+    font-weight: 600;
+    text-shadow: 0 1px 2px #0002;
+}
+
+.form-control {
+    background: #f4f8ff;
+    color: #1e3c72;
+    border-radius: 10px;
+    border: 1.5px solid #3b5998;
+    font-weight: 500;
+}
+
+.form-control:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 0 2px #2575fc33;
+    background: #eaf1fb;
+    color: #1e3c72;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #2575fc 0%, #1e3c72 100%);
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    color: #fff;
+    box-shadow: 0 2px 8px #00000022;
+    transition: background 0.3s;
+}
+.btn-primary:hover {
+    background: linear-gradient(90deg, #1e3c72 0%, #2575fc 100%);
+}
+
+.credit-card {
+    background: linear-gradient(120deg, #2b5876 0%, #4e4376 100%);
+    color: #fff;
+    border-radius: 22px;
+    box-shadow: 0 8px 32px 0 #00000033;
+    padding: 2.5rem 2rem 2rem 2rem;
+    margin: 2rem auto 0 auto;
+    max-width: 400px;
+    position: relative;
+    overflow: hidden;
+}
+.credit-card::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 120px;
+    height: 120px;
+    background: rgba(255,255,255,0.10);
+    border-radius: 50%;
+}
+.credit-card .chip {
+    width: 50px;
+    height: 35px;
+    background: linear-gradient(135deg, #e0e0e0 0%, #bdbdbd 100%);
+    border-radius: 8px;
+    margin-bottom: 1.2rem;
+}
+.credit-card .logo {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    width: 60px;
+    filter: brightness(0) invert(1);
+}
+.credit-card .score-label {
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    color: #b3cfff;
+    text-shadow: 0 1px 2px #0003;
+}
+.credit-card .score-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 8px #0005;
+}
+.credit-card .prob-label {
+    font-size: 1rem;
+    color: #e3eaff;
+    text-shadow: 0 1px 2px #0002;
+}
+.credit-card .prob-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 2px 8px #0005;
+}
+.credit-card .card-footer {
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+    color: #b3cfff;
+    text-align: right;
+    text-shadow: 0 1px 2px #0002;
+}
