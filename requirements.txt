@@ -6,3 +6,4 @@ joblib
 scikit-learn
 gspread
 google-auth
+psycopg2-binary
