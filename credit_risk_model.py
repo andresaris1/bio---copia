@@ -6,14 +6,15 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 class CreditRiskModel:
-    # Solo las 6 variables más importantes según SHAP
+    # Solo las 7 variables más importantes según SHAP/KBest
     TOP_FEATURES = [
         'last_pymnt_amnt',
         'total_rec_prncp',
         'funded_amnt',
         'funded_amnt_inv',
         'total_pymnt_inv',
-        'total_pymnt'
+        'total_pymnt',
+        'recoveries'
     ]
 
     def __init__(self, model_path='credit_risk_model.h5', prep_path='preprocessing.pkl'):
