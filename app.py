@@ -23,14 +23,14 @@ st.markdown("""
 total_rec_prncp = st.number_input("Total de principal recuperado (total_rec_prncp)", min_value=0.0, value=0.0)
 
 st.markdown("""
-**funded_amnt**: Monto total financiado al cliente (el préstamo otorgado). Ejemplo: 12000.
+**out_prncp**: Principal pendiente por pagar (monto del préstamo que aún no ha sido pagado). Ejemplo: 2000.
 """)
-funded_amnt = st.number_input("Monto financiado (funded_amnt)", min_value=0.0, value=0.0)
+out_prncp = st.number_input("Principal pendiente por pagar (out_prncp)", min_value=0.0, value=0.0)
 
 st.markdown("""
-**funded_amnt_inv**: Monto financiado por los inversores (puede coincidir con el monto financiado si todo fue cubierto por inversores). Ejemplo: 12000.
+**out_prncp_inv**: Principal pendiente a inversores (monto que aún se debe a los inversores). Ejemplo: 1500.
 """)
-funded_amnt_inv = st.number_input("Monto financiado por inversores (funded_amnt_inv)", min_value=0.0, value=0.0)
+out_prncp_inv = st.number_input("Principal pendiente a inversores (out_prncp_inv)", min_value=0.0, value=0.0)
 
 st.markdown("""
 **total_pymnt_inv**: Pagos totales realizados a los inversores. Ejemplo: 11000.
@@ -51,8 +51,8 @@ if st.button("Calcular score"):
     datos_usuario = {
         'last_pymnt_amnt': last_pymnt_amnt,
         'total_rec_prncp': total_rec_prncp,
-        'funded_amnt': funded_amnt,
-        'funded_amnt_inv': funded_amnt_inv,
+        'out_prncp': out_prncp,
+        'out_prncp_inv': out_prncp_inv,
         'total_pymnt_inv': total_pymnt_inv,
         'total_pymnt': total_pymnt,
         'recoveries': recoveries
