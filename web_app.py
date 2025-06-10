@@ -15,15 +15,12 @@ if not os.path.exists('credentials.json') and 'GOOGLE_CREDENTIALS_JSON' in os.en
         f.write(os.environ['GOOGLE_CREDENTIALS_JSON'])
 
 def guardar_resultado_en_db(score, probabilidad):
-    # Leer configuración de la base de datos desde db_config.json
-    with open('db_config.json', 'r') as f:
-        config = json.load(f)
     conn = psycopg2.connect(
-        host=config['host'],
-        database=config['database'],
-        user=config['user'],
-        password=config['password'],
-        port=config.get('port', 5432)
+        host=os.environ['DB_HOST'],
+        database=os.environ['DB_NAME'],
+        user=os.environ['DB_USER'],
+        password=os.environ['DB_PASSWORD'],
+        port=os.environ.get('DB_PORT', 5432)
     )
     cur = conn.cursor()
     # Crear la tabla si no existe
@@ -46,14 +43,12 @@ def guardar_resultado_en_db(score, probabilidad):
     conn.close()
 
 def obtener_scores_poblacion():
-    with open('db_config.json', 'r') as f:
-        config = json.load(f)
     conn = psycopg2.connect(
-        host=config['host'],
-        database=config['database'],
-        user=config['user'],
-        password=config['password'],
-        port=config.get('port', 5432)
+        host=os.environ['DB_HOST'],
+        database=os.environ['DB_NAME'],
+        user=os.environ['DB_USER'],
+        password=os.environ['DB_PASSWORD'],
+        port=os.environ.get('DB_PORT', 5432)
     )
     cur = conn.cursor()
     cur.execute("SELECT score FROM resultados")
