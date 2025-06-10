@@ -10,8 +10,8 @@ class CreditRiskModel:
     TOP_FEATURES = [
         'last_pymnt_amnt',
         'total_rec_prncp',
-        'funded_amnt',
-        'funded_amnt_inv',
+        'out_prncp',
+        'out_prncp_inv',
         'total_pymnt_inv',
         'total_pymnt',
         'recoveries'
