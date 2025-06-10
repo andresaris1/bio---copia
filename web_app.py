@@ -2,6 +2,8 @@ from flask import Flask, render_template, request
 from credit_risk_model import CreditRiskModel
 import os
 import psycopg2
+import json
+import numpy as np
 
 app = Flask(__name__)
 crm = CreditRiskModel()
@@ -13,12 +15,15 @@ if not os.path.exists('credentials.json') and 'GOOGLE_CREDENTIALS_JSON' in os.en
         f.write(os.environ['GOOGLE_CREDENTIALS_JSON'])
 
 def guardar_resultado_en_db(score, probabilidad):
+    # Leer configuración de la base de datos desde db_config.json
+    with open('db_config.json', 'r') as f:
+        config = json.load(f)
     conn = psycopg2.connect(
-        host=os.environ['DB_HOST'],
-        database=os.environ['DB_NAME'],
-        user=os.environ['DB_USER'],
-        password=os.environ['DB_PASSWORD'],
-        port=os.environ.get('DB_PORT', '5432')
+        host=config['host'],
+        database=config['database'],
+        user=config['user'],
+        password=config['password'],
+        port=config.get('port', 5432)
     )
     cur = conn.cursor()
     # Crear la tabla si no existe
@@ -40,9 +45,28 @@ def guardar_resultado_en_db(score, probabilidad):
     cur.close()
     conn.close()
 
+def obtener_scores_poblacion():
+    with open('db_config.json', 'r') as f:
+        config = json.load(f)
+    conn = psycopg2.connect(
+        host=config['host'],
+        database=config['database'],
+        user=config['user'],
+        password=config['password'],
+        port=config.get('port', 5432)
+    )
+    cur = conn.cursor()
+    cur.execute("SELECT score FROM resultados")
+    scores = [row[0] for row in cur.fetchall()]
+    cur.close()
+    conn.close()
+    return scores
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     resultado = None
+    percentiles = None
+    user_percentil = None
     if request.method == 'POST':
         datos_usuario = {
             'last_pymnt_amnt': float(request.form['last_pymnt_amnt']),
@@ -54,12 +78,26 @@ def index():
         }
         prob = crm.predict(datos_usuario)[0]
         score = int(crm.prob_to_score(prob))
+        # Clasificación del score
+        if score > 800:
+            clasificacion = "Buen crédito"
+        elif 400 <= score <= 800:
+            clasificacion = "Crédito regular"
+        else:
+            clasificacion = "Mal crédito"
+        # Obtener scores de la población y calcular percentiles
+        scores_poblacion = obtener_scores_poblacion()
+        if scores_poblacion:
+            percentiles = [np.percentile(scores_poblacion, p) for p in [0, 25, 50, 75, 100]]
+            user_percentil = int((np.sum(np.array(scores_poblacion) <= score) / len(scores_poblacion)) * 100)
         resultado = {
             'probabilidad': f"{prob*100:.2f}",
-            'score': score
+            'score': score,
+            'clasificacion': clasificacion,
+            'user_percentil': user_percentil
         }
         guardar_resultado_en_db(score, resultado['probabilidad'])
-    return render_template('index.html', resultado=resultado)
+    return render_template('index.html', resultado=resultado, percentiles=percentiles)
 
 if __name__ == '__main__':
     import os
