@@ -66,10 +66,11 @@ def index():
         datos_usuario = {
             'last_pymnt_amnt': float(request.form['last_pymnt_amnt']),
             'total_rec_prncp': float(request.form['total_rec_prncp']),
-            'funded_amnt': float(request.form['funded_amnt']),
-            'funded_amnt_inv': float(request.form['funded_amnt_inv']),
+            'out_prncp': float(request.form['out_prncp']),
+            'out_prncp_inv': float(request.form['out_prncp_inv']),
             'total_pymnt_inv': float(request.form['total_pymnt_inv']),
-            'total_pymnt': float(request.form['total_pymnt'])
+            'total_pymnt': float(request.form['total_pymnt']),
+            'recoveries': float(request.form['recoveries'])
         }
         prob = crm.predict(datos_usuario)[0]
         score = int(crm.prob_to_score(prob))
