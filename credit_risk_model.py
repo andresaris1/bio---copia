@@ -6,15 +6,18 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 class CreditRiskModel:
-    # Variables más importantes según KBest
+    # Variables más importantes según KBest (actualizadas)
     TOP_FEATURES = [
-        'out_prncp',
-        'out_prncp_inv',
+        'pct_principal_paid',
+        'total_rec_prncp',
+        'last_pymnt_amnt',
+        'recoveries',
         'total_pymnt',
         'total_pymnt_inv',
-        'total_rec_prncp',
-        'recoveries',
-        'last_pymnt_amnt'
+        'out_prncp',
+        'out_prncp_inv',
+        'int_rate',
+        'pct_term_paid'
     ]
 
     def __init__(self, model_path='credit_risk_model.h5', prep_path='preprocessing.pkl', scaler_path='scaler.joblib'):
@@ -32,11 +35,21 @@ class CreditRiskModel:
             'next_pymnt_d', 'verification_status_joint', 'desc', 'emp_title', 'title'
         ]
         df = df.drop(columns=columns_to_remove, errors='ignore')
-        # Elimina columnas problemáticas
         cols_to_drop = ['id', 'member_id', 'url', 'zip_code', 'loan_status']
         df = df.drop(columns=cols_to_drop, errors='ignore')
-        # Elimina columnas con un solo valor
         df = df.drop(columns=["application_type"], errors='ignore')
+        # Ingeniería de variables derivadas
+        if 'total_rec_prncp' in df.columns and 'loan_amnt' in df.columns:
+            df['pct_principal_paid'] = df['total_rec_prncp'] / df['loan_amnt']
+        if 'issue_d' in df.columns and 'last_pymnt_d' in df.columns and 'term' in df.columns:
+            df['issue_d'] = pd.to_datetime(df['issue_d'], errors='coerce')
+            df['last_pymnt_d'] = pd.to_datetime(df['last_pymnt_d'], errors='coerce')
+            def diff_months(end_date, start_date):
+                return (end_date.dt.year - start_date.dt.year) * 12 + (end_date.dt.month - start_date.dt.month)
+            df['meses_transcurridos'] = diff_months(df['last_pymnt_d'], df['issue_d'])
+            df['meses_transcurridos'] = df['meses_transcurridos'].clip(lower=0)
+            df['term_meses'] = df['term'].astype(str).str.extract(r'(\d+)').astype(float)
+            df['pct_term_paid'] = df['meses_transcurridos'] / df['term_meses']
         # One-hot encoding a las variables categóricas
         categorical_columns = df.select_dtypes(include=['object']).columns.tolist()
         df = pd.get_dummies(df, columns=categorical_columns, drop_first=True)
@@ -46,13 +59,14 @@ class CreditRiskModel:
 
     def preprocess(self, df):
         df_clean = self._clean_dataframe(df)
+        # Asegura que todas las columnas TOP_FEATURES existan
         for col in self.TOP_FEATURES:
             if col not in df_clean.columns:
                 df_clean[col] = 0
-        df_clean = df_clean[self.TOP_FEATURES]
+        X = df_clean[self.TOP_FEATURES]
         if self.scaler is not None:
-            df_clean = pd.DataFrame(self.scaler.transform(df_clean), columns=self.TOP_FEATURES)
-        return df_clean
+            X = pd.DataFrame(self.scaler.transform(X), columns=self.TOP_FEATURES)
+        return X
 
     def fit(self, csv_path):
         df = pd.read_csv(csv_path)
@@ -67,6 +81,10 @@ class CreditRiskModel:
         df['target'] = df['loan_status'].map(status_map)
         df = df[df['target'].notna()].copy()
         df_clean = self._clean_dataframe(df)
+        # Asegura que todas las columnas TOP_FEATURES existan
+        for col in self.TOP_FEATURES:
+            if col not in df_clean.columns:
+                df_clean[col] = 0
         X = df_clean[self.TOP_FEATURES]
         y = df['target']
         # Escalado
@@ -162,72 +180,90 @@ if __name__ == '__main__':
     crm = CreditRiskModel(model_file, prep_file, scaler_file)
     crm.fit(os.path.join('loan', 'loan.csv'))
     print('Modelo entrenado y guardado.')
-    # Ejemplo de predicción
+    # Ejemplo de predicción (actualizado)
     ejemplo = {
-        'last_pymnt_amnt': 500,
+        'pct_principal_paid': 1.0,
         'total_rec_prncp': 10000,
+        'last_pymnt_amnt': 500,
+        'recoveries': 0,
+        'total_pymnt': 11000,
+        'total_pymnt_inv': 11000,
         'out_prncp': 0,
         'out_prncp_inv': 0,
-        'total_pymnt_inv': 11000,
-        'total_pymnt': 11000,
-        'recoveries': 0
+        'int_rate': 12.5,
+        'pct_term_paid': 1.0
     }
     prob = crm.predict(ejemplo)[0]
     score = crm.prob_to_score(prob)
     print(f"Probabilidad de incumplimiento: {prob:.2%}")
     print(f"Score crediticio: {score:.0f}")
 
-    # Ejemplos adicionales para corroborar el modelo
+    # Ejemplos adicionales para corroborar el modelo (actualizados)
     ejemplos = [
         # Cliente con pagos altos y saldo bajo (bajo riesgo)
         {
-            'last_pymnt_amnt': 100,
+            'pct_principal_paid': 1.0,
             'total_rec_prncp': 12000,
+            'last_pymnt_amnt': 100,
+            'recoveries': 0,
+            'total_pymnt': 13000,
+            'total_pymnt_inv': 13000,
             'out_prncp': 0,
             'out_prncp_inv': 0,
-            'total_pymnt_inv': 13000,
-            'total_pymnt': 13000,
-            'recoveries': 0
+            'int_rate': 10.0,
+            'pct_term_paid': 1.0
         },
         # Cliente con saldo pendiente alto y pocos pagos (alto riesgo)
         {
-            'last_pymnt_amnt': 0,
+            'pct_principal_paid': 0.1,
             'total_rec_prncp': 1000,
+            'last_pymnt_amnt': 0,
+            'recoveries': 0,
+            'total_pymnt': 1200,
+            'total_pymnt_inv': 1200,
             'out_prncp': 9000,
             'out_prncp_inv': 9000,
-            'total_pymnt_inv': 1200,
-            'total_pymnt': 1200,
-            'recoveries': 0
+            'int_rate': 18.0,
+            'pct_term_paid': 0.2
         },
         # Cliente con pagos recientes medianos y saldo medio
         {
-            'last_pymnt_amnt': 500,
+            'pct_principal_paid': 0.6,
             'total_rec_prncp': 6000,
+            'last_pymnt_amnt': 500,
+            'recoveries': 0,
+            'total_pymnt': 7000,
+            'total_pymnt_inv': 7000,
             'out_prncp': 4000,
             'out_prncp_inv': 4000,
-            'total_pymnt_inv': 7000,
-            'total_pymnt': 7000,
-            'recoveries': 0
+            'int_rate': 15.0,
+            'pct_term_paid': 0.5
         },
         # Cliente que ya pagó todo (cero saldo, pagos completos)
         {
-            'last_pymnt_amnt': 0,
+            'pct_principal_paid': 1.0,
             'total_rec_prncp': 15000,
+            'last_pymnt_amnt': 0,
+            'recoveries': 0,
+            'total_pymnt': 16000,
+            'total_pymnt_inv': 16000,
             'out_prncp': 0,
             'out_prncp_inv': 0,
-            'total_pymnt_inv': 16000,
-            'total_pymnt': 16000,
-            'recoveries': 0
+            'int_rate': 9.0,
+            'pct_term_paid': 1.0
         },
         # Cliente con pagos recientes altos pero saldo pendiente
         {
-            'last_pymnt_amnt': 2000,
+            'pct_principal_paid': 0.5,
             'total_rec_prncp': 5000,
+            'last_pymnt_amnt': 2000,
+            'recoveries': 0,
+            'total_pymnt': 7000,
+            'total_pymnt_inv': 7000,
             'out_prncp': 5000,
             'out_prncp_inv': 5000,
-            'total_pymnt_inv': 7000,
-            'total_pymnt': 7000,
-            'recoveries': 0
+            'int_rate': 14.0,
+            'pct_term_paid': 0.7
         }
     ]
     print("\n--- Ejemplos adicionales de predicción ---")
