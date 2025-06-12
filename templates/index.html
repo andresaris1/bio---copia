@@ -104,12 +104,28 @@
     <h1 class="mb-4 text-center text-white">Scorecard de Riesgo Crediticio</h1>
     <form method="post" class="p-4 rounded-4 shadow-lg bg-blur-blue">
         <div class="mb-3">
-            <label for="last_pymnt_amnt" class="form-label text-white">Monto del último pago realizado por el cliente<br><span class='text-info'>(last_pymnt_amnt) - Ejemplo: 500</span></label>
-            <input type="number" class="form-control" id="last_pymnt_amnt" name="last_pymnt_amnt" min="0" step="any" required placeholder="Ejemplo: 500">
+            <label for="pct_principal_paid" class="form-label text-white">Porcentaje del principal pagado respecto al monto original del préstamo<br><span class='text-info'>(pct_principal_paid) - Ejemplo: 0.8 para 80% pagado</span></label>
+            <input type="number" class="form-control" id="pct_principal_paid" name="pct_principal_paid" min="0" max="1" step="any" required placeholder="Ejemplo: 0.8">
         </div>
         <div class="mb-3">
             <label for="total_rec_prncp" class="form-label text-white">Total del principal recuperado (cuánto del préstamo original ya ha sido pagado)<br><span class='text-info'>(total_rec_prncp) - Ejemplo: 10000</span></label>
             <input type="number" class="form-control" id="total_rec_prncp" name="total_rec_prncp" min="0" step="any" required placeholder="Ejemplo: 10000">
+        </div>
+        <div class="mb-3">
+            <label for="last_pymnt_amnt" class="form-label text-white">Monto del último pago realizado por el cliente<br><span class='text-info'>(last_pymnt_amnt) - Ejemplo: 500</span></label>
+            <input type="number" class="form-control" id="last_pymnt_amnt" name="last_pymnt_amnt" min="0" step="any" required placeholder="Ejemplo: 500">
+        </div>
+        <div class="mb-3">
+            <label for="recoveries" class="form-label text-white">Monto recuperado después de una pérdida o incumplimiento (si no aplica, poner 0)<br><span class='text-info'>(recoveries) - Ejemplo: 0</span></label>
+            <input type="number" class="form-control" id="recoveries" name="recoveries" min="0" step="any" required placeholder="Ejemplo: 0">
+        </div>
+        <div class="mb-3">
+            <label for="total_pymnt" class="form-label text-white">Pagos totales realizados por el cliente (incluye intereses y principal)<br><span class='text-info'>(total_pymnt) - Ejemplo: 11000</span></label>
+            <input type="number" class="form-control" id="total_pymnt" name="total_pymnt" min="0" step="any" required placeholder="Ejemplo: 11000">
+        </div>
+        <div class="mb-3">
+            <label for="total_pymnt_inv" class="form-label text-white">Pagos totales realizados a los inversores<br><span class='text-info'>(total_pymnt_inv) - Ejemplo: 11000</span></label>
+            <input type="number" class="form-control" id="total_pymnt_inv" name="total_pymnt_inv" min="0" step="any" required placeholder="Ejemplo: 11000">
         </div>
         <div class="mb-3">
             <label for="out_prncp" class="form-label text-white">Principal pendiente por pagar (monto del préstamo que aún no ha sido pagado)<br><span class='text-info'>(out_prncp) - Ejemplo: 2000</span></label>
@@ -120,16 +136,12 @@
             <input type="number" class="form-control" id="out_prncp_inv" name="out_prncp_inv" min="0" step="any" required placeholder="Ejemplo: 1500">
         </div>
         <div class="mb-3">
-            <label for="total_pymnt_inv" class="form-label text-white">Pagos totales realizados a los inversores<br><span class='text-info'>(total_pymnt_inv) - Ejemplo: 11000</span></label>
-            <input type="number" class="form-control" id="total_pymnt_inv" name="total_pymnt_inv" min="0" step="any" required placeholder="Ejemplo: 11000">
+            <label for="int_rate" class="form-label text-white">Tasa de interés anual del préstamo (en porcentaje)<br><span class='text-info'>(int_rate) - Ejemplo: 12.5 para 12.5%</span></label>
+            <input type="number" class="form-control" id="int_rate" name="int_rate" min="0" max="100" step="any" required placeholder="Ejemplo: 12.5">
         </div>
         <div class="mb-3">
-            <label for="total_pymnt" class="form-label text-white">Pagos totales realizados por el cliente (incluye intereses y principal)<br><span class='text-info'>(total_pymnt) - Ejemplo: 11000</span></label>
-            <input type="number" class="form-control" id="total_pymnt" name="total_pymnt" min="0" step="any" required placeholder="Ejemplo: 11000">
-        </div>
-        <div class="mb-3">
-            <label for="recoveries" class="form-label text-white">Monto recuperado después de una pérdida o incumplimiento (si no aplica, poner 0)<br><span class='text-info'>(recoveries) - Ejemplo: 0</span></label>
-            <input type="number" class="form-control" id="recoveries" name="recoveries" min="0" step="any" required placeholder="Ejemplo: 0">
+            <label for="pct_term_paid" class="form-label text-white">Porcentaje del plazo del préstamo que ya ha transcurrido<br><span class='text-info'>(pct_term_paid) - Ejemplo: 0.5 para 50% del plazo</span></label>
+            <input type="number" class="form-control" id="pct_term_paid" name="pct_term_paid" min="0" max="1" step="any" required placeholder="Ejemplo: 0.5">
         </div>
         <button type="submit" class="btn btn-primary w-100">Calcular score</button>
     </form>

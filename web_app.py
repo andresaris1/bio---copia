@@ -64,13 +64,16 @@ def index():
     user_percentil = None
     if request.method == 'POST':
         datos_usuario = {
-            'last_pymnt_amnt': float(request.form['last_pymnt_amnt']),
+            'pct_principal_paid': float(request.form['pct_principal_paid']),
             'total_rec_prncp': float(request.form['total_rec_prncp']),
+            'last_pymnt_amnt': float(request.form['last_pymnt_amnt']),
+            'recoveries': float(request.form['recoveries']),
+            'total_pymnt': float(request.form['total_pymnt']),
+            'total_pymnt_inv': float(request.form['total_pymnt_inv']),
             'out_prncp': float(request.form['out_prncp']),
             'out_prncp_inv': float(request.form['out_prncp_inv']),
-            'total_pymnt_inv': float(request.form['total_pymnt_inv']),
-            'total_pymnt': float(request.form['total_pymnt']),
-            'recoveries': float(request.form['recoveries'])
+            'int_rate': float(request.form['int_rate']),
+            'pct_term_paid': float(request.form['pct_term_paid'])
         }
         prob = crm.predict(datos_usuario)[0]
         score = int(crm.prob_to_score(prob))
